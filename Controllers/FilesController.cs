@@ -31,10 +31,10 @@ namespace CityInfo.API.Controllers
 
             if (!_fileExtensionContentTypeProvider.TryGetContentType(pathToFile, out var contentType))
             {
-                contentType = "application/octet-stream";
+                contentType = "application/octet-stream"; //catch-all for non-specific file types.
             }
             var bytes = System.IO.File.ReadAllBytes(pathToFile);
-            return File(bytes, "text/plain", Path.GetFileName(pathToFile));
+            return File(bytes, contentType, Path.GetFileName(pathToFile));
         }
     }
 }
