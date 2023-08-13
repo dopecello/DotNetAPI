@@ -63,5 +63,27 @@ namespace CityInfo.API.Controllers
             }, finalPointOfInterest
             );
         }
+        [HttpPut("{pointofinterestid}")]
+
+        public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestForUpdateDto pointOfInterest)
+        {
+            // account for null values
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+            var pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfInterestId);
+            if (pointOfInterestFromStore == null)
+            {
+                return NotFound();
+            }
+            // update the fields
+            pointOfInterestFromStore.Name = pointOfInterest.Name;
+            pointOfInterestFromStore.Description = pointOfInterest.Description;
+
+            // recommended in this case to return a 204 No Content message to the user.
+            return NoContent();
+        }
     }
 }
