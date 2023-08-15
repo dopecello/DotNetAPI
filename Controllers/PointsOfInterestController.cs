@@ -18,15 +18,23 @@ namespace CityInfo.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>> GetPointsOfInterest(int cityId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-
-            if (city == null)
+            try
             {
-                _logger.LogInformation($"The city with the ID {cityId} wasn't found when accessing points of interest."); // logging the 404 response.
-                return NotFound();
-            }
-            return Ok(city.PointsOfInterest);
+                var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
+                if (city == null)
+                {
+                    _logger.LogInformation($"The city with the ID {cityId} wasn't found when accessing points of interest."); // logging the 404 response.
+                    return NotFound();
+                }
+                return Ok(city.PointsOfInterest);
+            } catch (Exception ex)
+            {
+                _logger.LogCritical($"Exception while getting points of interest for city with id {cityId}.", ex);
+                return StatusCode(500, "A problem happened while handling your request.");
+                // the importance here is that without logging, it would throw a 'Status 500 - Internal Server Error'
+                // never return stack trace in a production environment.
+            }
         }
 
         [HttpGet("{pointofinterestid}", Name = "GetPointOfInterest")]
