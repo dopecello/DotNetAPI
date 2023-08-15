@@ -9,6 +9,12 @@ namespace CityInfo.API.Controllers
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
+        private readonly ILogger<PointsOfInterestController> _logger;
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        } // despite ASP.NET Core's built in container, we can still use anything we want, so the null check is still valid.
+
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>> GetPointsOfInterest(int cityId)
         {
@@ -16,6 +22,7 @@ namespace CityInfo.API.Controllers
 
             if (city == null)
             {
+                _logger.LogInformation($"The city with the ID {cityId} wasn't found when accessing points of interest."); // logging the 404 response.
                 return NotFound();
             }
             return Ok(city.PointsOfInterest);
