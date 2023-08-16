@@ -1,3 +1,4 @@
+using CityInfo.API;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
@@ -25,7 +26,8 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
-builder.Services.AddTransient<LocalMailService>(); // transient service because it is lightweight and stateless, for now.
+builder.Services.AddSingleton<CitiesDataStore>();
+
 #if DEBUG
 builder.Services.AddTransient<IMailService, LocalMailService>(); // transient service because it is lightweight and stateless, for now.
 #else
