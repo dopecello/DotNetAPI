@@ -26,6 +26,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 builder.Services.AddTransient<LocalMailService>(); // transient service because it is lightweight and stateless, for now.
+#if DEBUG
+builder.Services.AddTransient<IMailService, LocalMailService>(); // transient service because it is lightweight and stateless, for now.
+#else
+builder.Services.AddTransient<IMailService, CloudMailService>();
+#endif // compiler directives to differentiate which service we want stemming from same interface.
 
 var app = builder.Build();
 
